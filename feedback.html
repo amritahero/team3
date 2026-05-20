@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback - TechNova 2026</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <h1>TechNova 2026</h1>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="events.html">Events</a>
+        <a href="feedback.html">Feedback</a>
+    </nav>
+</header>
+
+<section>
+
+    <h2>Feedback Form</h2>
+
+    <form id="feedbackForm">
+
+        <input type="text" id="sname" placeholder="Student Name">
+
+        <input type="text" id="sreg" placeholder="Register Number">
+
+        <select id="fevent">
+            <option value="">Select Event</option>
+            <option>Hackathon</option>
+            <option>Robotics</option>
+            <option>AI Workshop</option>
+            <option>Paper Presentation</option>
+        </select>
+
+        <select id="rating">
+            <option value="">Rating</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+        </select>
+
+        <textarea id="comments" placeholder="Comments"></textarea>
+
+        <button type="submit">Submit Feedback</button>
+
+    </form>
+
+    <div id="feedbackMsg"></div>
+
+    <div id="summary"></div>
+
+</section>
+
+<footer>
+    <p>© 2026 TechNova Fest</p>
+</footer>
+
+<script>
+
+let ratings = [];
+
+document.getElementById("feedbackForm").addEventListener("submit", function(e){
+
+    e.preventDefault();
+
+    let sreg = document.getElementById("sreg").value.trim();
+    let event = document.getElementById("fevent").value;
+    let rating = document.getElementById("rating").value;
+    let comments = document.getElementById("comments").value.trim();
+
+    let regPattern = /^[A-Z]{2}[0-9]{3}$/;
+
+    if(!regPattern.test(sreg)){
+        showMessage("Invalid Register Number", "error");
+        return;
+    }
+
+    if(event === ""){
+        showMessage("Select an event", "error");
+        return;
+    }
+
+    if(rating === ""){
+        showMessage("Select rating", "error");
+        return;
+    }
+
+    if(comments.length < 20){
+        showMessage("Comments must contain minimum 20 characters", "error");
+        return;
+    }
+
+    ratings.push(Number(rating));
+
+    let avg = ratings.reduce((a,b)=>a+b,0) / ratings.length;
+
+    showMessage("Feedback Submitted Successfully", "success");
+
+    document.getElementById("summary").innerHTML += `
+        <div class="card">
+            <p><strong>Event:</strong> ${event}</p>
+            <p><strong>Rating:</strong> ${rating}</p>
+            <p><strong>Comments:</strong> ${comments}</p>
+            <p><strong>Average Rating:</strong> ${avg.toFixed(2)}</p>
+        </div>
+    `;
+
+    document.getElementById("feedbackForm").reset();
+
+});
+
+function showMessage(msg, type){
+    let feedbackMsg = document.getElementById("feedbackMsg");
+    feedbackMsg.innerHTML = msg;
+    feedbackMsg.className = type;
+}
+
+</script>
+
+</body>
+</html>

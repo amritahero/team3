@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events - TechNova 2026</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<script src="package.js"></script>
+<header>
+    <h1>TechNova 2026</h1>
+
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="events.html">Events</a>
+        <a href="feedback.html">Feedback</a>
+    </nav>
+</header>
+
+<section>
+    <h2>Event Details</h2>
+
+    <div class="grid-container">
+
+        <div class="card">
+            <h3>Hackathon</h3>
+            <p>ID: E101</p>
+            <p>Category: Coding</p>
+            <p>Date: 10 April 2026</p>
+            <p>Venue: Lab 1</p>
+            <p>Fee: ₹300</p>
+            <p>Status: Open</p>
+        </div>
+
+        <div class="card">
+            <h3>Robotics</h3>
+            <p>ID: E102</p>
+            <p>Category: Hardware</p>
+            <p>Date: 11 April 2026</p>
+            <p>Venue: Hall A</p>
+            <p>Fee: ₹250</p>
+            <p>Status: Open</p>
+        </div>
+
+        <div class="card">
+            <h3>Gaming</h3>
+            <p>ID: E103</p>
+            <p>Category: Entertainment</p>
+            <p>Date: 12 April 2026</p>
+            <p>Venue: Arena</p>
+            <p>Fee: ₹200</p>
+            <p>Status: Closed</p>
+        </div>
+
+        <div class="card">
+            <h3>AI Workshop</h3>
+            <p>ID: E104</p>
+            <p>Category: Workshop</p>
+            <p>Date: 10 April 2026</p>
+            <p>Venue: Seminar Hall</p>
+            <p>Fee: ₹150</p>
+            <p>Status: Open</p>
+        </div>
+
+        <div class="card">
+            <h3>Paper Presentation</h3>
+            <p>ID: E105</p>
+            <p>Category: Research</p>
+            <p>Date: 13 April 2026</p>
+            <p>Venue: Conference Room</p>
+            <p>Fee: ₹100</p>
+            <p>Status: Open</p>
+        </div>
+
+    </div>
+</section>
+
+<section>
+
+    <h2>Event Registration</h2>
+
+    <form id="regForm">
+
+        <input type="text" id="name" placeholder="Student Name">
+
+        <input type="email" id="email" placeholder="Email">
+
+        <input type="text" id="mobile" placeholder="Mobile Number">
+
+        <input type="text" id="regno" readonly placeholder="Register Number">
+
+        <select id="event">
+            <option value="">Select Event</option>
+            <option value="Hackathon">Hackathon</option>
+            <option value="Robotics">Robotics</option>
+            <option value="Gaming">Gaming</option>
+            <option value="AI Workshop">AI Workshop</option>
+            <option value="Paper Presentation">Paper Presentation</option>
+        </select>
+
+        <select id="ptype">
+            <option value="">Participation Type</option>
+            <option value="Individual">Individual</option>
+            <option value="Team">Team</option>
+        </select>
+
+        <input type="text" id="teamname" placeholder="Team Name">
+
+        <input type="number" id="teamsize" placeholder="Team Size">
+
+        <button type="submit">Register</button>
+
+    </form>
+
+    <div id="message"></div>
+
+    <h3>Total Registrations: <span id="count">0</span></h3>
+
+    <div id="participantDetails"></div>
+
+</section>
+
+<footer>
+    <p>© 2026 TechNova Fest</p>
+</footer>
+
+<script>
+
+let registrations = [];
+let count = 0;
+
+function generateRegNo() {
+
+    let randomNum = Math.floor(100 + Math.random() * 900);
+
+    return "TN" + randomNum;
+}
+
+document.getElementById("regno").value = generateRegNo();
+
+document.getElementById("regForm").addEventListener("submit", function(e){
+
+    e.preventDefault();
+
+    let name = document.getElementById("name").value.trim();
+
+    let email = document.getElementById("email").value.trim();
+
+    let mobile = document.getElementById("mobile").value.trim();
+
+    let regno = document.getElementById("regno").value;
+
+    let event = document.getElementById("event").value;
+
+    let ptype = document.getElementById("ptype").value;
+
+    let teamname = document.getElementById("teamname").value.trim();
+
+    let teamsize = document.getElementById("teamsize").value;
+
+    let message = document.getElementById("message");
+
+    message.innerHTML = "";
+    message.className = "";
+
+    if(name === ""){
+        showError("Name required");
+        return;
+    }
+
+    if(email === ""){
+        showError("Email required");
+        return;
+    }
+
+    if(!/^[0-9]{10}$/.test(mobile)){
+        showError("Invalid mobile number");
+        return;
+    }
+
+    if(event === ""){
+        showError("Select an event");
+        return;
+    }
+
+    if(event === "Gaming"){
+        showError("Gaming event registration is closed");
+        return;
+    }
+
+    if(ptype === "Team"){
+
+        if(teamname === ""){
+            showError("Team name required");
+            return;
+        }
+
+        if(teamsize < 2 || teamsize > 4){
+            showError("Team size must be between 2 and 4");
+            return;
+        }
+    }
+
+    let duplicate = registrations.find(
+        r => r.name === name && r.event === event
+    );
+
+    if(duplicate){
+        showError("Duplicate registration detected");
+        return;
+    }
+
+    registrations.push({
+        name,
+        regno,
+        event
+    });
+
+    count++;
+
+    document.getElementById("count").innerHTML = count;
+
+    message.innerHTML = "Registration Successful!";
+    message.className = "success";
+
+    document.getElementById("participantDetails").innerHTML += `
+
+        <div class="card">
+
+            <h4>${name}</h4>
+
+            <p><strong>Register No:</strong> ${regno}</p>
+
+            <p><strong>Event:</strong> ${event}</p>
+
+            <p><strong>Participation:</strong> ${ptype}</p>
+
+        </div>
+
+    `;
+
+    document.getElementById("regForm").reset();
+
+    document.getElementById("regno").value = generateRegNo();
+
+});
+
+function showError(msg){
+
+    let message = document.getElementById("message");
+
+    message.innerHTML = msg;
+
+    message.className = "error";
+}
+
+</script>
+
+</body>
+</html>
